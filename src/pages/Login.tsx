@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { ShoppingCart, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Login = () => {
@@ -54,10 +54,10 @@ const Login = () => {
 
       <div className="glass-card rounded-2xl p-8 w-full max-w-md mx-4 animate-fade-up shadow-glass relative z-10">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-xl gradient-accent flex items-center justify-center mx-auto mb-4">
-            <ShoppingCart className="w-7 h-7 text-primary-foreground" />
+          <div className="w-20 h-14 rounded-xl gradient-accent flex items-center justify-center mx-auto mb-4 p-2">
+            <img src="/logo.svg" alt="Oliver Soft Tech" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Super Mercado Pereira</h1>
+          <h1 className="text-2xl font-bold text-foreground">Oliver Soft Tech</h1>
           <p className="text-sm text-muted-foreground mt-1">
             {isLogin ? 'Acesse sua conta' : 'Crie sua conta'}
           </p>

@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node sales/importar-vendas.mjs)"
+      "Bash(node sales/importar-vendas.mjs)",
+      "Bash(supabase db:*)"
     ]
   }
 }

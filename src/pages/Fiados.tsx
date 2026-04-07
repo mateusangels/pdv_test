@@ -257,7 +257,7 @@ const Fiados = () => {
     const nome = (f.clientes as any)?.nome || '';
     const saldo = Number(f.valor_total) - Number(f.valor_pago);
     const msg = encodeURIComponent(
-      `Olá ${nome}.\n\nVocê possui um saldo pendente no Supermercado Pereira.\n\nValor total: ${formatBRL(Number(f.valor_total))}\nValor pago: ${formatBRL(Number(f.valor_pago))}\nValor pendente: ${formatBRL(saldo)}\n\nFavor regularizar o quanto antes.`
+      `Olá ${nome}.\n\nVocê possui um saldo pendente na Oliver Soft Tech.\n\nValor total: ${formatBRL(Number(f.valor_total))}\nValor pago: ${formatBRL(Number(f.valor_pago))}\nValor pendente: ${formatBRL(saldo)}\n\nFavor regularizar o quanto antes.`
     );
     window.open(`https://wa.me/55${tel}?text=${msg}`, '_blank');
     supabase.from('cobrancas').insert({ cliente_id: f.cliente_id, fiado_id: f.id, valor_cobrado: saldo, enviado_por: user?.id });

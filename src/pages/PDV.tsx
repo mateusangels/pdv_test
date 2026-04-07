@@ -770,10 +770,10 @@ const PDV = () => {
       <header className="relative z-20 flex items-center justify-between px-4 py-2 bg-[#0a3d91] border-b border-[#0d47a1] shadow-lg">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate('/dashboard')} className="p-1 rounded-lg hover:bg-white/10 transition-colors">
-            <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+            <img src="/logo.svg" alt="Logo" className="w-8 h-8 object-contain" />
           </button>
           <div>
-            <h1 className="text-sm font-bold tracking-wide text-white">SUPERMERCADO PEREIRA PDV</h1>
+            <h1 className="text-sm font-bold tracking-wide text-white">OLIVER SOFT TECH PDV</h1>
             <p className="text-[10px] text-blue-200">Terminal {String(numeroCaixa).padStart(2, '0')} - Caixa {numeroCaixa}</p>
           </div>
         </div>
@@ -879,7 +879,7 @@ const PDV = () => {
             <div className="flex-1 p-3 overflow-hidden flex flex-col">
               <div className="flex-1 bg-card rounded-lg border border-border overflow-auto shadow-sm relative">
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-                  <img src="/fundotransparente.png" alt="" className="w-[1100px] h-auto opacity-[0.12]" />
+                  <img src="/fundo-oliver.svg" alt="" className="w-[1100px] h-auto opacity-[0.35]" />
                 </div>
                 <Table className="relative z-[1]">
                   <TableHeader>

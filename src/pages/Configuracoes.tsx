@@ -58,7 +58,7 @@ const Configuracoes = () => {
 
   // aba loja
   const [loja, setLoja] = useState({
-    nomeFantasia: 'Supermercado Pereira',
+    nomeFantasia: 'Oliver Soft Tech',
     cnpj: '',
     endereco: '',
     limiteCredito: '500',

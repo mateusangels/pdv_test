@@ -47,9 +47,9 @@ function headerHTML(titulo: string, subtitulo?: string) {
     return `
     <div class="header">
       <div style="display:flex;align-items:center;gap:12px">
-        <img src="/logo.png" alt="Supermercado Pereira" style="width:60px;height:auto" />
+        <img src="/logo.svg" alt="Oliver Soft Tech" style="width:80px;height:auto" />
         <div>
-          <h1>Supermercado Pereira</h1>
+          <h1>Oliver Soft Tech</h1>
           <p style="font-size:12px;color:#666;margin-top:2px">${titulo}</p>
           ${subtitulo ? `<p style="font-size:11px;color:#888">${subtitulo}</p>` : ''}
         </div>
@@ -122,7 +122,7 @@ export function gerarRelatorioFiadoPDF(
         html += `</tbody></table></div>`;
     }
 
-    html += `<div class="footer">Relatório gerado automaticamente pelo sistema Supermercado Pereira</div>`;
+    html += `<div class="footer">Relatório gerado automaticamente pelo sistema Oliver Soft Tech</div>`;
     openPrintWindow(`Fiado #${fiado.id.slice(0, 8)} – ${cliente?.nome || ''}`, html);
 }
 
@@ -206,6 +206,6 @@ export function gerarRelatorioClientePDF(
     }
 
     html += `</div>`;
-    html += `<div class="footer">Relatório gerado automaticamente pelo sistema Supermercado Pereira</div>`;
+    html += `<div class="footer">Relatório gerado automaticamente pelo sistema Oliver Soft Tech</div>`;
     openPrintWindow(`Cliente – ${cliente.nome}`, html);
 }

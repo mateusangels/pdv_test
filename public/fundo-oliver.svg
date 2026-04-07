@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 600" fill="none">
+  <defs>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#1e40af" stroke-width="0.6"/>
+    </pattern>
+    <linearGradient id="textgrad" x1="200" y1="0" x2="900" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1100" height="600" fill="url(#grid)" />
+
+  <!-- Hexagons decorativos -->
+  <polygon points="200,100 240,100 260,134 240,168 200,168 180,134" stroke="#3b82f6" stroke-width="1.5" fill="none"/>
+  <polygon points="850,80 890,80 910,114 890,148 850,148 830,114" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+  <polygon points="950,400 990,400 1010,434 990,468 950,468 930,434" stroke="#3b82f6" stroke-width="1.5" fill="none"/>
+  <polygon points="100,350 140,350 160,384 140,418 100,418 80,384" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+
+  <!-- Hexágono central com gráfico -->
+  <polygon points="550,210 616,210 649,272 616,334 550,334 517,272" stroke="#3b82f6" stroke-width="3" fill="none"/>
+  <rect x="535" y="298" width="14" height="22" rx="2" fill="#3b82f6"/>
+  <rect x="555" y="278" width="14" height="42" rx="2" fill="#4f87f7"/>
+  <rect x="575" y="256" width="14" height="64" rx="2" fill="#6366f1"/>
+  <polyline points="598,250 614,234 630,250" stroke="#818cf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Nome em azul vibrante -->
+  <text x="550" y="375" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="48" font-weight="900" fill="url(#textgrad)" letter-spacing="3">OLIVER SOFT TECH</text>
+  <text x="550" y="405" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="15" font-weight="700" fill="#6366f1" letter-spacing="8">SOLUÇÕES EM SISTEMAS</text>
+
+  <!-- Cantos -->
+  <line x1="0" y1="0" x2="140" y2="0" stroke="#3b82f6" stroke-width="4"/>
+  <line x1="0" y1="0" x2="0" y2="140" stroke="#3b82f6" stroke-width="4"/>
+  <line x1="1100" y1="600" x2="960" y2="600" stroke="#6366f1" stroke-width="4"/>
+  <line x1="1100" y1="600" x2="1100" y2="460" stroke="#6366f1" stroke-width="4"/>
+</svg>

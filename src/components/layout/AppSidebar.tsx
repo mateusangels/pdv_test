@@ -24,12 +24,12 @@ export const AppSidebar = () => {
     <aside className="fixed left-0 top-0 h-full w-60 gradient-primary flex flex-col z-50">
       <div className="p-5 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-sidebar-primary flex items-center justify-center">
-            <ShoppingCart className="w-5 h-5 text-sidebar-primary-foreground" />
+          <div className="w-9 h-9 rounded-lg bg-sidebar-primary flex items-center justify-center overflow-hidden">
+            <img src="/logo.svg" alt="Oliver Soft Tech" className="w-7 h-7 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
           </div>
           <div>
-            <h1 className="text-sm font-bold text-sidebar-foreground">Super Mercado Pereira</h1>
-            <p className="text-[10px] text-sidebar-foreground/60 uppercase tracking-wider">Gestão de Fiados</p>
+            <h1 className="text-sm font-bold text-sidebar-foreground">Oliver Soft Tech</h1>
+            <p className="text-[10px] text-sidebar-foreground/60 uppercase tracking-wider">Soluções em Sistemas</p>
           </div>
         </div>
       </div>

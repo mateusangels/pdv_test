@@ -4,11 +4,11 @@
 const LARGURA = 32;
 
 const LOJA = {
-  nome: 'SUPERMERCADO PEREIRA',
-  endereco: 'SETOR C QD 09, 01 - CAMPOS LINDOS',
-  cidade: 'CRISTALINA/GO',
-  telefone: '6185326114',
-  cnpj: '63531877000129',
+  nome: 'OLIVER SOFT TECH',
+  endereco: 'SOLUCOES EM SISTEMAS',
+  cidade: '',
+  telefone: '',
+  cnpj: '',
   ie: '',
 };
 
@@ -340,7 +340,7 @@ export function imprimirCupom(conteudo: string): void {
 </head>
 <body>
   <div class="cupom">
-    <img src="/fundotransparente.png" alt="" class="watermark" />
+    <img src="/fundo-oliver.svg" alt="" class="watermark" />
     <pre>${conteudo}</pre>
   </div>
 </body>
