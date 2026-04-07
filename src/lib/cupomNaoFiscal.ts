@@ -1,16 +1,22 @@
 // Gerador de Cupom Não Fiscal para impressora térmica 58mm
 // ~32 caracteres por linha
 
+import { getLojaConfig } from './lojaConfig';
+
 const LARGURA = 32;
 
-const LOJA = {
-  nome: 'OLIVER SOFT TECH',
-  endereco: 'SOLUCOES EM SISTEMAS',
-  cidade: '',
-  telefone: '',
-  cnpj: '',
-  ie: '',
-};
+function getLoja() {
+  const cfg = getLojaConfig();
+  return {
+    nome: cfg.nomeFantasia || 'OLIVER SOFT TECH',
+    endereco: cfg.endereco || 'SOLUCOES EM SISTEMAS',
+    cidade: cfg.cidade || '',
+    telefone: cfg.telefone || '',
+    cnpj: cfg.cnpj || '',
+    ie: cfg.ie || '',
+    logoUrl: cfg.logoUrl || '',
+  };
+}
 
 function centralizar(texto: string): string {
   const pad = Math.max(0, Math.floor((LARGURA - texto.length) / 2));
@@ -93,15 +99,15 @@ export interface DadosCupomFiado {
 }
 
 function cabecalho(): string[] {
-  return [
-    centralizar(LOJA.nome),
-    centralizar(LOJA.endereco),
-    centralizar(LOJA.cidade),
-    centralizar(`TELEFONE: ${LOJA.telefone}`),
-    centralizar(`CNPJ: ${LOJA.cnpj}`),
-    centralizar(`IE: ${LOJA.ie || ''}`),
-    linha(),
-  ];
+  const LOJA = getLoja();
+  const lines = [centralizar(LOJA.nome)];
+  if (LOJA.endereco) lines.push(centralizar(LOJA.endereco));
+  if (LOJA.cidade) lines.push(centralizar(LOJA.cidade));
+  if (LOJA.telefone) lines.push(centralizar(`TELEFONE: ${LOJA.telefone}`));
+  if (LOJA.cnpj) lines.push(centralizar(`CNPJ: ${LOJA.cnpj}`));
+  if (LOJA.ie) lines.push(centralizar(`IE: ${LOJA.ie}`));
+  lines.push(linha());
+  return lines;
 }
 
 function formatarData(d: Date): string {
@@ -272,7 +278,9 @@ export function gerarCupomFiado(dados: DadosCupomFiado): string {
 }
 
 export function imprimirCupom(conteudo: string): void {
-  // Usa iframe oculto para não bloquear a tela do PDV
+  const LOJA = getLoja();
+  const logoSrc = LOJA.logoUrl || '/fundo.png';
+
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
   iframe.style.right = '0';
@@ -290,12 +298,6 @@ export function imprimirCupom(conteudo: string): void {
   }
 
   doc.open();
-  // Conta as linhas para calcular o meio do cupom
-  const linhas = conteudo.split('\n');
-  const meioIdx = Math.floor(linhas.length / 2);
-  const antes = linhas.slice(0, meioIdx).join('\n');
-  const depois = linhas.slice(meioIdx).join('\n');
-
   doc.write(`<!DOCTYPE html>
 <html>
 <head>
@@ -340,7 +342,7 @@ export function imprimirCupom(conteudo: string): void {
 </head>
 <body>
   <div class="cupom">
-    <img src="/fundo-oliver.svg" alt="" class="watermark" />
+    <img src="${logoSrc}" alt="" class="watermark" />
     <pre>${conteudo}</pre>
   </div>
 </body>

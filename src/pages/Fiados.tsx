@@ -268,11 +268,7 @@ const Fiados = () => {
 
   return (
     <div>
-      <PageHeader title="Fiados" description="Controle de vendas fiadas">
-        <Button onClick={() => { setShowForm(true); setItensForm([]); }} className="gap-2 gradient-accent text-primary-foreground">
-          <Plus className="w-4 h-4" /> Novo Fiado
-        </Button>
-      </PageHeader>
+      <PageHeader title="Fiados" description="Controle de vendas fiadas" />
 
       <div className="bg-card rounded-xl shadow-card border border-border/50 animate-fade-up">
         <div className="p-4 border-b border-border flex flex-wrap gap-3">

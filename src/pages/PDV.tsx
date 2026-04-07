@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import cpfImg from '@/assets/cpf.png';
+import { getLojaConfig } from '@/lib/lojaConfig';
 
 interface ItemVenda {
   id: string;
@@ -879,7 +880,7 @@ const PDV = () => {
             <div className="flex-1 p-3 overflow-hidden flex flex-col">
               <div className="flex-1 bg-card rounded-lg border border-border overflow-auto shadow-sm relative">
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-                  <img src="/fundo-oliver.svg" alt="" className="w-[1100px] h-auto opacity-[0.35]" />
+                  <img src={getLojaConfig().logoUrl || '/fundo.png'} alt="" className="w-[1100px] h-auto opacity-[0.35]" />
                 </div>
                 <Table className="relative z-[1]">
                   <TableHeader>

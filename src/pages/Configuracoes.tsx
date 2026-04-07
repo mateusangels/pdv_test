@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { PageHeader } from '@/components/shared/PageHeader';
@@ -13,10 +13,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import {
   Settings, User, Store, Bell, ShieldCheck, Loader2,
-  Lock, Phone, Mail, Building2, CreditCard, AlertTriangle, Users, Plus, Trash2
+  Lock, Phone, Mail, Building2, CreditCard, AlertTriangle, Users, Plus, Trash2, Upload, Image
 } from 'lucide-react';
+import { getLojaConfig, saveLojaConfig, type LojaConfig } from '@/lib/lojaConfig';
 
-// ── seção wrapper ──────────────────────────────────────────────────────────────
 const Section = ({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) => (
   <div className="bg-card rounded-xl shadow-card border border-border/50 p-5 mb-4 animate-fade-up">
     <div className="mb-4">
@@ -27,7 +27,6 @@ const Section = ({ title, description, children }: { title: string; description?
   </div>
 );
 
-// ── toggle row ─────────────────────────────────────────────────────────────────
 const Toggle = ({ label, description, checked, onChecked, id }: {
   label: string; description?: string; checked: boolean; onChecked: (v: boolean) => void; id: string;
 }) => (
@@ -40,7 +39,6 @@ const Toggle = ({ label, description, checked, onChecked, id }: {
   </div>
 );
 
-// ── component ──────────────────────────────────────────────────────────────────
 const Configuracoes = () => {
   const { profile, role, refreshProfile } = useAuth();
   const { toast } = useToast();
@@ -56,17 +54,12 @@ const Configuracoes = () => {
   const [showPin, setShowPin] = useState(false);
   const [savingPerfil, setSavingPerfil] = useState(false);
 
-  // aba loja
-  const [loja, setLoja] = useState({
-    nomeFantasia: 'Oliver Soft Tech',
-    cnpj: '',
-    endereco: '',
-    limiteCredito: '500',
-    prazoFiado: '30',
-  });
+  // aba loja - carrega do localStorage
+  const [loja, setLoja] = useState<LojaConfig>(() => getLojaConfig());
   const [savingLoja, setSavingLoja] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
-  // aba notificações (preferências)
+  // aba notificações
   const [notifPrefs, setNotifPrefs] = useState({
     comprasRecentes: true,
     inadimplentes: true,
@@ -99,7 +92,7 @@ const Configuracoes = () => {
     ? perfil.nome.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
     : 'U';
 
-  // ── save perfil ──────────────────────────────────────────────────────────────
+  // ── save perfil
   const savePerfil = async () => {
     setSavingPerfil(true);
     try {
@@ -119,7 +112,7 @@ const Configuracoes = () => {
     } finally { setSavingPerfil(false); }
   };
 
-  // ── save senha ───────────────────────────────────────────────────────────────
+  // ── save senha
   const saveSenha = async () => {
     if (senha.nova !== senha.confirmar) { toast({ title: 'Senhas não conferem', variant: 'destructive' }); return; }
     if (senha.nova.length < 6) { toast({ title: 'Mínimo 6 caracteres', variant: 'destructive' }); return; }
@@ -134,15 +127,36 @@ const Configuracoes = () => {
     } finally { setSavingSenha(false); }
   };
 
-  // ── save loja ────────────────────────────────────────────────────────────────
+  // ── save loja
   const saveLoja = async () => {
     setSavingLoja(true);
-    await new Promise(r => setTimeout(r, 600));
-    toast({ title: 'Configurações da loja salvas!' });
+    saveLojaConfig(loja);
+    await new Promise(r => setTimeout(r, 300));
+    toast({ title: 'Configurações da loja salvas! Os cupons já usarão os novos dados.' });
     setSavingLoja(false);
   };
 
-  // ── cadastrar funcionário ───────────────────────────────────────────────────
+  // ── upload logo
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast({ title: 'Imagem muito grande. Máximo 2MB.', variant: 'destructive' });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      setLoja(prev => ({ ...prev, logoUrl: dataUrl }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeLogo = () => {
+    setLoja(prev => ({ ...prev, logoUrl: '' }));
+  };
+
+  // ── cadastrar funcionário (sem confirmação de email)
   const handleAddFuncionario = async () => {
     if (!funcForm.email || !funcForm.senha || !funcForm.nome) {
       toast({ title: 'Preencha todos os campos', variant: 'destructive' });
@@ -157,13 +171,15 @@ const Configuracoes = () => {
       const { error } = await supabase.auth.signUp({
         email: funcForm.email,
         password: funcForm.senha,
-        options: { data: { nome: funcForm.nome, cargo: funcForm.cargo } },
+        options: {
+          data: { nome: funcForm.nome, cargo: funcForm.cargo },
+        },
       });
       if (error) throw error;
-      toast({ title: `Funcionário ${funcForm.nome} cadastrado! Um e-mail de confirmação foi enviado.` });
+      toast({ title: `Funcionário ${funcForm.nome} cadastrado com sucesso!` });
       setFuncForm({ nome: '', email: '', senha: '', cargo: 'funcionario' });
       setShowAddFunc(false);
-      setTimeout(() => fetchFuncionarios(), 2000);
+      setTimeout(() => fetchFuncionarios(), 1500);
     } catch (err: any) {
       toast({ title: err.message || 'Erro ao cadastrar', variant: 'destructive' });
     } finally { setSavingFunc(false); }
@@ -176,8 +192,7 @@ const Configuracoes = () => {
       <Tabs defaultValue="perfil" className="w-full">
         <TabsList className="mb-5 h-10 w-full justify-start gap-1 bg-muted/50 p-1 rounded-lg flex-wrap">
           <TabsTrigger value="perfil" className="gap-1.5 text-xs"><User className="w-3.5 h-3.5" />Perfil</TabsTrigger>
-          <TabsTrigger value="funcionarios" className="gap-1.5 text-xs"><Users className="w-3.5 h-3.5" />Funcionários</TabsTrigger>
-          <TabsTrigger value="loja" className="gap-1.5 text-xs"><Store className="w-3.5 h-3.5" />Loja</TabsTrigger>
+<TabsTrigger value="loja" className="gap-1.5 text-xs"><Store className="w-3.5 h-3.5" />Loja</TabsTrigger>
           <TabsTrigger value="notificacoes" className="gap-1.5 text-xs"><Bell className="w-3.5 h-3.5" />Notificações</TabsTrigger>
           <TabsTrigger value="seguranca" className="gap-1.5 text-xs"><ShieldCheck className="w-3.5 h-3.5" />Segurança</TabsTrigger>
         </TabsList>
@@ -246,91 +261,9 @@ const Configuracoes = () => {
           </Section>
         </TabsContent>
 
-        {/* ── ABA FUNCIONÁRIOS ── */}
-        <TabsContent value="funcionarios">
-          <Section title="Cadastro de Funcionários" description="Gerencie os funcionários do sistema">
-            <div className="flex justify-end mb-4">
-              <Button onClick={() => setShowAddFunc(!showAddFunc)} className="gap-2 gradient-accent text-primary-foreground">
-                <Plus className="w-4 h-4" /> Novo Funcionário
-              </Button>
-            </div>
-
-            {showAddFunc && (
-              <div className="bg-muted/30 rounded-lg p-4 mb-4 border border-border/50 animate-fade-up">
-                <h4 className="text-sm font-semibold mb-3">Cadastrar Novo Funcionário</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-xs uppercase text-muted-foreground mb-1.5 block">Nome Completo</Label>
-                    <Input value={funcForm.nome} onChange={e => setFuncForm({ ...funcForm, nome: e.target.value })} placeholder="Nome do funcionário" />
-                  </div>
-                  <div>
-                    <Label className="text-xs uppercase text-muted-foreground mb-1.5 block">E-mail</Label>
-                    <Input type="email" value={funcForm.email} onChange={e => setFuncForm({ ...funcForm, email: e.target.value })} placeholder="email@exemplo.com" />
-                  </div>
-                  <div>
-                    <Label className="text-xs uppercase text-muted-foreground mb-1.5 block">Senha</Label>
-                    <Input type="password" value={funcForm.senha} onChange={e => setFuncForm({ ...funcForm, senha: e.target.value })} placeholder="Mínimo 6 caracteres" />
-                  </div>
-                  <div>
-                    <Label className="text-xs uppercase text-muted-foreground mb-1.5 block">Cargo</Label>
-                    <Select value={funcForm.cargo} onValueChange={v => setFuncForm({ ...funcForm, cargo: v })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="funcionario">Funcionário</SelectItem>
-                        <SelectItem value="admin">Administrador</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="mt-3 flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setShowAddFunc(false)}>Cancelar</Button>
-                  <Button onClick={handleAddFuncionario} disabled={savingFunc} className="gradient-accent text-primary-foreground gap-2">
-                    {savingFunc && <Loader2 className="w-4 h-4 animate-spin" />} Cadastrar
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {loadingFunc ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-              </div>
-            ) : funcionarios.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-8">Nenhum funcionário cadastrado</p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs">NOME</TableHead>
-                    <TableHead className="text-xs">E-MAIL</TableHead>
-                    <TableHead className="text-xs">CARGO</TableHead>
-                    <TableHead className="text-xs">FUNÇÃO</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {funcionarios.map(f => (
-                    <TableRow key={f.id}>
-                      <TableCell className="text-sm font-medium">{f.nome}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground">{f.email}</TableCell>
-                      <TableCell className="text-sm capitalize">{f.cargo || 'funcionario'}</TableCell>
-                      <TableCell className="text-sm">
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${
-                          f.user_roles?.[0]?.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
-                        }`}>
-                          {f.user_roles?.[0]?.role || 'funcionario'}
-                        </span>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </Section>
-        </TabsContent>
-
         {/* ── ABA LOJA ── */}
         <TabsContent value="loja">
-          <Section title="Informações da Loja" description="Dados do estabelecimento">
+          <Section title="Informações da Loja" description="Esses dados aparecerão nos cupons e no sistema">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <Label className="text-xs uppercase text-muted-foreground flex items-center gap-1 mb-1.5">
@@ -343,8 +276,54 @@ const Configuracoes = () => {
                 <Input value={loja.cnpj} onChange={e => setLoja({ ...loja, cnpj: e.target.value })} placeholder="00.000.000/0001-00" />
               </div>
               <div>
+                <Label className="text-xs uppercase text-muted-foreground mb-1.5 block">Inscrição Estadual</Label>
+                <Input value={loja.ie} onChange={e => setLoja({ ...loja, ie: e.target.value })} placeholder="Isento" />
+              </div>
+              <div>
                 <Label className="text-xs uppercase text-muted-foreground mb-1.5 block">Endereço</Label>
                 <Input value={loja.endereco} onChange={e => setLoja({ ...loja, endereco: e.target.value })} placeholder="Rua, número, bairro" />
+              </div>
+              <div>
+                <Label className="text-xs uppercase text-muted-foreground mb-1.5 block">Cidade / UF</Label>
+                <Input value={loja.cidade} onChange={e => setLoja({ ...loja, cidade: e.target.value })} placeholder="Cidade - UF" />
+              </div>
+              <div>
+                <Label className="text-xs uppercase text-muted-foreground flex items-center gap-1 mb-1.5">
+                  <Phone className="w-3 h-3" /> Telefone
+                </Label>
+                <Input value={loja.telefone} onChange={e => setLoja({ ...loja, telefone: e.target.value })} placeholder="(00) 00000-0000" />
+              </div>
+            </div>
+          </Section>
+
+          <Section title="Logo / Imagem da Loja" description="Esta imagem será usada como fundo do PDV e marca d'água nos cupons">
+            <div className="flex items-start gap-4">
+              <div className="w-32 h-32 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-muted/30 overflow-hidden shrink-0">
+                {loja.logoUrl ? (
+                  <img src={loja.logoUrl} alt="Logo" className="w-full h-full object-contain" />
+                ) : (
+                  <Image className="w-8 h-8 text-muted-foreground/40" />
+                )}
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">Envie a logo ou imagem da sua loja. Formatos aceitos: PNG, JPG. Tamanho máximo: 2MB.</p>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="gap-1.5" onClick={() => logoInputRef.current?.click()}>
+                    <Upload className="w-3.5 h-3.5" /> Enviar imagem
+                  </Button>
+                  {loja.logoUrl && (
+                    <Button variant="outline" size="sm" className="gap-1.5 text-destructive" onClick={removeLogo}>
+                      <Trash2 className="w-3.5 h-3.5" /> Remover
+                    </Button>
+                  )}
+                </div>
+                <input
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg"
+                  className="hidden"
+                  onChange={handleLogoUpload}
+                />
               </div>
             </div>
           </Section>
@@ -380,13 +359,13 @@ const Configuracoes = () => {
                 <p className="text-[11px] text-muted-foreground mt-1">Após este prazo o fiado é marcado como atrasado</p>
               </div>
             </div>
-
-            <div className="mt-5 flex justify-end">
-              <Button onClick={saveLoja} disabled={savingLoja} className="gradient-accent text-primary-foreground gap-2">
-                {savingLoja && <Loader2 className="w-4 h-4 animate-spin" />} Salvar Loja
-              </Button>
-            </div>
           </Section>
+
+          <div className="flex justify-end mb-4">
+            <Button onClick={saveLoja} disabled={savingLoja} className="gradient-accent text-primary-foreground gap-2">
+              {savingLoja && <Loader2 className="w-4 h-4 animate-spin" />} Salvar Configurações da Loja
+            </Button>
+          </div>
         </TabsContent>
 
         {/* ── ABA NOTIFICAÇÕES ── */}
@@ -477,24 +456,6 @@ const Configuracoes = () => {
                 {savingSenha && <Loader2 className="w-4 h-4 animate-spin" />}
                 Alterar Senha
               </Button>
-            </div>
-          </Section>
-
-          <Section title="Informações do Sistema" description="Detalhes técnicos da versão atual">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-              {[
-                { label: 'Versão', value: '1.0.0' },
-                { label: 'Backend', value: 'Supabase' },
-                { label: 'Ambiente', value: 'Produção' },
-                { label: 'Função', value: role || 'admin' },
-                { label: 'Framework', value: 'React + Vite' },
-                { label: 'Build', value: new Date().toLocaleDateString('pt-BR') },
-              ].map(item => (
-                <div key={item.label} className="bg-muted/50 rounded-lg p-3">
-                  <p className="text-[10px] uppercase text-muted-foreground">{item.label}</p>
-                  <p className="font-medium text-sm mt-0.5">{item.value}</p>
-                </div>
-              ))}
             </div>
           </Section>
         </TabsContent>

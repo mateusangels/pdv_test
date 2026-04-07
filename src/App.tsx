@@ -13,7 +13,7 @@ import Fiados from "./pages/Fiados";
 import FiadoDetalhe from "./pages/FiadoDetalhe";
 import Pagamentos from "./pages/Pagamentos";
 import Perfil from "./pages/Perfil";
-import Assinatura from "./pages/Assinatura";
+
 import Relatorios from "./pages/Relatorios";
 import Configuracoes from "./pages/Configuracoes";
 import Produtos from "./pages/Produtos";
@@ -49,7 +49,6 @@ const AppRoutes = () => {
         <Route path="/produtos" element={<Produtos />} />
         <Route path="/vendas" element={<Vendas />} />
         <Route path="/perfil" element={<Perfil />} />
-        <Route path="/assinatura" element={<Assinatura />} />
         <Route path="/relatorios" element={<Relatorios />} />
         <Route path="/configuracoes" element={<Configuracoes />} />
       </Route>

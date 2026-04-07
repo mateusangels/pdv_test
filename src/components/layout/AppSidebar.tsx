@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, ShoppingCart, FileText, CreditCard, Settings, User, Package, LogOut, Plus, Monitor, Box, Receipt } from 'lucide-react';
+import { LayoutDashboard, Users, ShoppingCart, FileText, CreditCard, Settings, User, LogOut, Monitor, Box, Receipt, PanelLeftClose, PanelLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from 'react';
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
@@ -12,62 +12,78 @@ const navItems = [
   { icon: ShoppingCart, label: 'Fiados', path: '/fiados' },
   { icon: CreditCard, label: 'Pagamentos', path: '/pagamentos' },
   { icon: FileText, label: 'Relatórios', path: '/relatorios' },
-  { icon: Package, label: 'Assinatura', path: '/assinatura' },
   { icon: Settings, label: 'Configurações', path: '/configuracoes' },
 ];
 
-export const AppSidebar = () => {
+export const AppSidebar = ({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) => {
   const location = useLocation();
   const { signOut, profile } = useAuth();
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-60 gradient-primary flex flex-col z-50">
-      <div className="p-5 border-b border-sidebar-border">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-sidebar-primary flex items-center justify-center overflow-hidden">
-            <img src="/logo.svg" alt="Oliver Soft Tech" className="w-7 h-7 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
-          </div>
-          <div>
-            <h1 className="text-sm font-bold text-sidebar-foreground">Oliver Soft Tech</h1>
-            <p className="text-[10px] text-sidebar-foreground/60 uppercase tracking-wider">Soluções em Sistemas</p>
-          </div>
+    <aside
+      className={`fixed left-0 top-0 h-full bg-[#0f1729] flex flex-col z-50 transition-all duration-200 ${collapsed ? 'w-[60px]' : 'w-56'}`}
+    >
+      {/* Logo */}
+      <div className={`flex items-center border-b border-white/5 ${collapsed ? 'justify-center py-3 px-2' : 'gap-3 px-4 py-3'}`}>
+        <div className="w-8 h-8 rounded-md bg-blue-600 flex items-center justify-center shrink-0 overflow-hidden">
+          <img src="/logo.svg" alt="Logo" className="w-6 h-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
         </div>
+        {!collapsed && (
+          <div className="overflow-hidden">
+            <h1 className="text-xs font-semibold text-white truncate">Oliver Soft Tech</h1>
+            <p className="text-[9px] text-white/40 truncate">Soluções em Sistemas</p>
+          </div>
+        )}
       </div>
 
-      <nav className="flex-1 p-3 space-y-1">
+      {/* Nav */}
+      <nav className="flex-1 py-2 px-1.5 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
-                ? 'bg-sidebar-primary text-sidebar-primary-foreground'
-                : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground'
-                }`}
+              title={collapsed ? item.label : undefined}
+              className={`flex items-center rounded-md text-[13px] transition-colors ${collapsed ? 'justify-center p-2.5' : 'gap-2.5 px-3 py-2'} ${isActive
+                ? 'bg-blue-600/20 text-blue-400'
+                : 'text-white/50 hover:text-white/80 hover:bg-white/5'
+              }`}
             >
-              <item.icon className="w-[18px] h-[18px]" />
-              {item.label}
+              <item.icon className="w-[17px] h-[17px] shrink-0" />
+              {!collapsed && <span>{item.label}</span>}
             </Link>
           );
         })}
       </nav>
 
-      <div className="p-3 space-y-2">
-        <Link to="/fiados/novo">
-          <Button className="w-full bg-sidebar-primary hover:bg-sidebar-primary/90 text-sidebar-primary-foreground gap-2 rounded-lg">
-            <Plus className="w-4 h-4" />
-            Novo Fiado
-          </Button>
-        </Link>
-        <div className="flex items-center gap-2 p-2">
-          <Link to="/perfil" className="flex items-center gap-2 flex-1 text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors text-sm">
-            <User className="w-4 h-4" />
-            <span className="truncate text-xs">{profile?.nome || 'Usuário'}</span>
+      {/* Bottom */}
+      <div className="border-t border-white/5 px-1.5 py-2 space-y-1">
+        {/* Collapse toggle */}
+        <button
+          onClick={onToggle}
+          title={collapsed ? 'Expandir menu' : 'Recolher menu'}
+          className={`flex items-center rounded-md text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors w-full ${collapsed ? 'justify-center p-2.5' : 'gap-2.5 px-3 py-2 text-[13px]'}`}
+        >
+          {collapsed ? <PanelLeft className="w-[17px] h-[17px]" /> : <PanelLeftClose className="w-[17px] h-[17px]" />}
+          {!collapsed && <span>Recolher</span>}
+        </button>
+
+        {/* User */}
+        <div className={`flex items-center ${collapsed ? 'justify-center py-1' : 'gap-2 px-2 py-1'}`}>
+          <Link
+            to="/perfil"
+            title={collapsed ? profile?.nome || 'Perfil' : undefined}
+            className={`flex items-center text-white/50 hover:text-white/80 transition-colors ${collapsed ? '' : 'gap-2 flex-1'}`}
+          >
+            <User className="w-4 h-4 shrink-0" />
+            {!collapsed && <span className="truncate text-xs">{profile?.nome || 'Usuário'}</span>}
           </Link>
-          <button onClick={signOut} className="text-sidebar-foreground/40 hover:text-sidebar-foreground transition-colors p-1">
-            <LogOut className="w-4 h-4" />
-          </button>
+          {!collapsed && (
+            <button onClick={signOut} className="text-white/30 hover:text-white/60 transition-colors p-1" title="Sair">
+              <LogOut className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
     </aside>
