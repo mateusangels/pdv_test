@@ -15,8 +15,11 @@ import {
 } from '@/lib/cupomNaoFiscal';
 import {
   ShoppingCart, Search, User, Banknote, CreditCard, Smartphone, HandCoins, BookOpen,
-  Plus, Minus, Trash2, X, Check, ArrowLeft, DoorOpen, DoorClosed, Printer, Pencil, FileText, Receipt, Eye, Clock
+  Plus, Minus, Trash2, X, Check, ArrowLeft, DoorOpen, DoorClosed, Printer, Pencil, FileText, Receipt, Eye, Clock,
+  Wifi, WifiOff, CloudUpload, Loader2
 } from 'lucide-react';
+import { useOfflineSync } from '@/hooks/useOfflineSync';
+import { salvarVendaPendente, buscarProdutosOffline, buscarProdutoOfflineExato, countVendasPendentes, type VendaPendente } from '@/lib/offlineDb';
 import { useNavigate } from 'react-router-dom';
 import cpfImg from '@/assets/cpf.png';
 import { getLojaConfig } from '@/lib/lojaConfig';
@@ -125,8 +128,11 @@ const PDV = () => {
   const [cpfNotaModalOpen, setCpfNotaModalOpen] = useState(false);
   const [cpfNota, setCpfNota] = useState('');
 
-  // Finalizando (anti duplo clique)
-  const [finalizando, setFinalizando] = useState(false);
+  // Finalizando (anti duplo clique - useRef para guard síncrono)
+  const finalizandoRef = useRef(false);
+
+  // Offline sync
+  const { isOnline, isSyncing, pendingCount, syncNow } = useOfflineSync();
 
   // Help overlay
   const [helpOpen, setHelpOpen] = useState(false);
@@ -395,15 +401,22 @@ const PDV = () => {
 
     const trimmed = code.trim();
 
-    const { data, error } = await supabase
-      .from('produtos')
-      .select('*')
-      .or(`codigo_barras.eq.${trimmed},codigo_interno.eq.${trimmed}`)
-      .eq('ativo', true)
-      .limit(1)
-      .maybeSingle();
+    let data: any = null;
 
-    if (error || !data) {
+    if (navigator.onLine) {
+      const res = await supabase
+        .from('produtos')
+        .select('*')
+        .or(`codigo_barras.eq.${trimmed},codigo_interno.eq.${trimmed}`)
+        .eq('ativo', true)
+        .limit(1)
+        .maybeSingle();
+      data = res.data;
+    } else {
+      data = await buscarProdutoOfflineExato(trimmed);
+    }
+
+    if (!data) {
       toast({ title: 'Produto não encontrado', description: `Código: ${code}`, variant: 'destructive' });
       setBarcodeInput('');
       setStatus('aberto');
@@ -448,41 +461,59 @@ const PDV = () => {
       setShowBarcodeSuggestions(false);
       setBarcodeSuggestions([]);
       barcodeTimeoutRef.current = setTimeout(async () => {
-        const { data } = await supabase
-          .from('produtos')
-          .select('*')
-          .or(`codigo_barras.eq.${trimmed},codigo_interno.eq.${trimmed}`)
-          .eq('ativo', true)
-          .limit(1)
-          .maybeSingle();
-        if (data) {
-          // Exact barcode match - auto add
-          addItemByBarcode(trimmed);
-        } else {
-          // No exact match - show suggestions
-          const { data: suggestions } = await supabase
+        let data: any = null;
+        let suggestions: any[] = [];
+
+        if (navigator.onLine) {
+          const res = await supabase
             .from('produtos')
             .select('*')
+            .or(`codigo_barras.eq.${trimmed},codigo_interno.eq.${trimmed}`)
             .eq('ativo', true)
-            .or(`codigo_barras.ilike.%${trimmed}%,descricao.ilike.%${trimmed}%,marca.ilike.%${trimmed}%`)
-            .order('descricao')
-            .limit(10);
-          setBarcodeSuggestions(suggestions || []);
-          setShowBarcodeSuggestions((suggestions || []).length > 0);
+            .limit(1)
+            .maybeSingle();
+          data = res.data;
+        } else {
+          data = await buscarProdutoOfflineExato(trimmed);
+        }
+
+        if (data) {
+          addItemByBarcode(trimmed);
+        } else {
+          if (navigator.onLine) {
+            const { data: sug } = await supabase
+              .from('produtos')
+              .select('*')
+              .eq('ativo', true)
+              .or(`codigo_barras.ilike.%${trimmed}%,descricao.ilike.%${trimmed}%,marca.ilike.%${trimmed}%`)
+              .order('descricao')
+              .limit(10);
+            suggestions = sug || [];
+          } else {
+            suggestions = await buscarProdutosOffline(trimmed);
+          }
+          setBarcodeSuggestions(suggestions);
+          setShowBarcodeSuggestions(suggestions.length > 0);
         }
       }, 400);
     } else {
       // Text input - show suggestions only
       barcodeTimeoutRef.current = setTimeout(async () => {
-        const { data } = await supabase
-          .from('produtos')
-          .select('*')
-          .eq('ativo', true)
-          .or(`descricao.ilike.%${trimmed}%,codigo_barras.ilike.%${trimmed}%,marca.ilike.%${trimmed}%`)
-          .order('descricao')
-          .limit(10);
-        setBarcodeSuggestions(data || []);
-        setShowBarcodeSuggestions((data || []).length > 0);
+        let results: any[] = [];
+        if (navigator.onLine) {
+          const { data } = await supabase
+            .from('produtos')
+            .select('*')
+            .eq('ativo', true)
+            .or(`descricao.ilike.%${trimmed}%,codigo_barras.ilike.%${trimmed}%,marca.ilike.%${trimmed}%`)
+            .order('descricao')
+            .limit(10);
+          results = data || [];
+        } else {
+          results = await buscarProdutosOffline(trimmed);
+        }
+        setBarcodeSuggestions(results);
+        setShowBarcodeSuggestions(results.length > 0);
       }, 250);
     }
   };
@@ -644,8 +675,8 @@ const PDV = () => {
   };
 
   const finalizarVenda = async () => {
-    if (itens.length === 0 || finalizando) return;
-    setFinalizando(true);
+    if (itens.length === 0 || finalizandoRef.current) return;
+    finalizandoRef.current = true;
 
     try {
       if (metodoPagamento === 'fiado' && !cliente) {
@@ -666,16 +697,7 @@ const PDV = () => {
         tipo: metodoPagamento === 'fiado' ? 'fiado' : 'normal',
       };
 
-      const { data: venda, error: vendaErr } = await supabase
-        .from('vendas')
-        .insert(vendaPayload)
-        .select()
-        .single();
-
-      if (vendaErr) throw vendaErr;
-
       const itensPayload = itens.map(i => ({
-        venda_id: venda.id,
         produto_id: i.produto_id || null,
         codigo_barras: i.codigo_barras,
         descricao: i.descricao,
@@ -686,38 +708,68 @@ const PDV = () => {
         valor_total: i.valor_total,
       }));
 
-      const { error: itensErr } = await supabase.from('venda_itens').insert(itensPayload);
-      if (itensErr) throw itensErr;
+      const fiadoPayload = (metodoPagamento === 'fiado' && cliente) ? {
+        cliente_id: cliente.id,
+        created_by: user?.id || null,
+        descricao: `Venda PDV #${vendaNumero}`,
+        valor_total: total,
+        valor_pago: 0,
+        status: 'pendente',
+      } : undefined;
 
-      if (metodoPagamento === 'fiado' && cliente) {
-        const { error: fiadoErr } = await supabase.from('fiados').insert({
-          cliente_id: cliente.id,
-          created_by: user?.id || null,
-          descricao: `Venda PDV #${vendaNumero}`,
-          valor_total: total,
-          valor_pago: 0,
-          status: 'pendente',
-        });
-        if (fiadoErr) throw fiadoErr;
-      }
+      const estoqueUpdates = itens
+        .filter(i => i.produto_id)
+        .map(i => ({ produto_id: i.produto_id!, quantidade: i.quantidade }));
 
-      for (const item of itens) {
-        if (item.produto_id) {
+      if (navigator.onLine) {
+        // === ONLINE: salva direto no Supabase ===
+        const { data: venda, error: vendaErr } = await supabase
+          .from('vendas')
+          .insert(vendaPayload)
+          .select()
+          .single();
+
+        if (vendaErr) throw vendaErr;
+
+        const itensWithVendaId = itensPayload.map(i => ({ ...i, venda_id: venda.id }));
+        const { error: itensErr } = await supabase.from('venda_itens').insert(itensWithVendaId);
+        if (itensErr) throw itensErr;
+
+        if (fiadoPayload) {
+          const { error: fiadoErr } = await supabase.from('fiados').insert(fiadoPayload);
+          if (fiadoErr) throw fiadoErr;
+        }
+
+        for (const upd of estoqueUpdates) {
           const { data: prod } = await supabase.from('produtos')
             .select('estoque_atual, movimenta_estoque')
-            .eq('id', item.produto_id)
+            .eq('id', upd.produto_id)
             .single();
           if (prod && prod.movimenta_estoque) {
             await supabase.from('produtos')
-              .update({ estoque_atual: Number(prod.estoque_atual) - item.quantidade })
-              .eq('id', item.produto_id);
+              .update({ estoque_atual: Number(prod.estoque_atual) - upd.quantidade })
+              .eq('id', upd.produto_id);
           }
         }
+
+        toast({ title: '✅ Venda finalizada!', description: `Venda #${vendaNumero} - ${formatBRL(total)}` });
+      } else {
+        // === OFFLINE: salva no IndexedDB ===
+        const vendaPendente: VendaPendente = {
+          id: crypto.randomUUID(),
+          timestamp: Date.now(),
+          vendaPayload,
+          itensPayload,
+          fiadoPayload,
+          estoqueUpdates,
+        };
+        await salvarVendaPendente(vendaPendente);
+        toast({ title: '📴 Venda salva offline', description: `Será sincronizada quando a internet voltar. ${formatBRL(total)}` });
       }
 
-      // === GERAR CUPOM NÃO FISCAL ===
+      // === GERAR CUPOM NÃO FISCAL (sempre, online ou offline) ===
       const cupomData: DadosCupomVenda = {
-        id: venda.id,
+        id: crypto.randomUUID(),
         data: new Date(),
         itens: itens.map(i => ({
           codigo_barras: i.codigo_barras,
@@ -743,8 +795,6 @@ const PDV = () => {
       setCupomTipo('venda');
       setCupomConfirmOpen(true);
 
-      toast({ title: '✅ Venda finalizada!', description: `Venda #${vendaNumero} - ${formatBRL(total)}` });
-
       setItens([]);
       setCliente(null);
       setDividaCliente(0);
@@ -758,7 +808,7 @@ const PDV = () => {
     } catch (e: any) {
       toast({ title: 'Erro ao finalizar', description: e.message, variant: 'destructive' });
     } finally {
-      setFinalizando(false);
+      finalizandoRef.current = false;
     }
   };
 
@@ -836,6 +886,31 @@ const PDV = () => {
         </div>
 
         <div className="flex items-center gap-4">
+          {/* Indicador online/offline/sincronizando */}
+          {isSyncing ? (
+            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-500/20 border border-yellow-400/30">
+              <Loader2 className="w-3 h-3 text-yellow-300 animate-spin" />
+              <span className="text-[10px] font-medium text-yellow-300">SINCRONIZANDO...</span>
+            </div>
+          ) : isOnline ? (
+            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/20 border border-green-400/30">
+              <Wifi className="w-3 h-3 text-green-300" />
+              <span className="text-[10px] font-medium text-green-300">ONLINE</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-red-500/20 border border-red-400/30 animate-pulse">
+              <WifiOff className="w-3 h-3 text-red-300" />
+              <span className="text-[10px] font-medium text-red-300">OFFLINE</span>
+            </div>
+          )}
+          {pendingCount > 0 && (
+            <button onClick={() => { if (isOnline) syncNow(); }}
+              className="flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500/20 border border-orange-400/30 hover:bg-orange-500/30 transition-colors">
+              <CloudUpload className="w-3 h-3 text-orange-300" />
+              <span className="text-[10px] font-bold text-orange-300">{pendingCount}</span>
+            </button>
+          )}
+
           <div className="text-right">
             <p className="text-sm font-medium text-white">{dateStr}, {timeStr}</p>
             <div className="flex items-center gap-1 justify-end">

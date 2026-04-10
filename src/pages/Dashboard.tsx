@@ -9,7 +9,7 @@ import { formatBRL } from '@/lib/format';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const CORES = ['#1a237e', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#06b6d4'];
 const tooltipStyle = { borderRadius: '8px', border: '1px solid hsl(var(--border))', fontSize: '12px' };
@@ -56,6 +56,9 @@ const Dashboard = () => {
   const [periodo, setPeriodo] = useState<Periodo>('mes_atual');
   const [customStart, setCustomStart] = useState('');
   const [customEnd, setCustomEnd] = useState('');
+  const [showVendas, setShowVendas] = useState(true);
+  const [showFiados, setShowFiados] = useState(true);
+  const [showRecebido, setShowRecebido] = useState(true);
 
   // Raw data
   const [fiados, setFiados] = useState<any[]>([]);
@@ -218,8 +221,44 @@ const Dashboard = () => {
 
       {/* Evolução Mensal */}
       <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 mb-4 animate-fade-up" style={{ animationDelay: '500ms' }}>
-        <h3 className="text-base font-semibold mb-0.5">Evolução Mensal</h3>
-        <p className="text-xs text-muted-foreground mb-4">Vendas PDV vs. Fiados vs. Recebimentos – últimos 6 meses</p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-base font-semibold mb-0.5">Evolução Mensal</h3>
+            <p className="text-xs text-muted-foreground">Últimos 6 meses</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowVendas(v => !v)}
+              className="px-3 py-1 rounded-full text-xs font-semibold transition-all"
+              style={showVendas
+                ? { backgroundColor: '#1a237e', color: '#fff' }
+                : { backgroundColor: 'hsl(var(--muted))', color: 'hsl(var(--muted-foreground))', textDecoration: 'line-through' }
+              }
+            >
+              Vendas PDV
+            </button>
+            <button
+              onClick={() => setShowFiados(v => !v)}
+              className="px-3 py-1 rounded-full text-xs font-semibold transition-all"
+              style={showFiados
+                ? { backgroundColor: '#f59e0b', color: '#fff' }
+                : { backgroundColor: 'hsl(var(--muted))', color: 'hsl(var(--muted-foreground))', textDecoration: 'line-through' }
+              }
+            >
+              Fiados
+            </button>
+            <button
+              onClick={() => setShowRecebido(v => !v)}
+              className="px-3 py-1 rounded-full text-xs font-semibold transition-all"
+              style={showRecebido
+                ? { backgroundColor: '#10b981', color: '#fff' }
+                : { backgroundColor: 'hsl(var(--muted))', color: 'hsl(var(--muted-foreground))', textDecoration: 'line-through' }
+              }
+            >
+              Recebido
+            </button>
+          </div>
+        </div>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} barGap={4}>
@@ -227,10 +266,9 @@ const Dashboard = () => {
               <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} />
               <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} tickFormatter={v => `R$${v}`} width={70} />
               <Tooltip formatter={(v: number) => formatBRL(v)} contentStyle={tooltipStyle} />
-              <Legend wrapperStyle={{ fontSize: '11px' }} />
-              <Bar dataKey="vendas" fill={CORES[0]} radius={[4, 4, 0, 0]} name="Vendas PDV" />
-              <Bar dataKey="fiados" fill={CORES[1]} radius={[4, 4, 0, 0]} name="Fiados" />
-              <Bar dataKey="recebido" fill={CORES[2]} radius={[4, 4, 0, 0]} name="Recebido" />
+              {showVendas && <Bar dataKey="vendas" fill="#1a237e" stroke="#1a237e" radius={[4, 4, 0, 0]} name="Vendas PDV" />}
+              {showFiados && <Bar dataKey="fiados" fill="#f59e0b" stroke="#f59e0b" radius={[4, 4, 0, 0]} name="Fiados" />}
+              {showRecebido && <Bar dataKey="recebido" fill="#10b981" stroke="#10b981" radius={[4, 4, 0, 0]} name="Recebido" />}
             </BarChart>
           </ResponsiveContainer>
         </div>
