@@ -1697,7 +1697,7 @@ const PDV = () => {
       <Dialog open={finalizarModalOpen} onOpenChange={setFinalizarModalOpen}>
         <DialogContent className="sm:max-w-sm" onKeyDown={(e) => {
           // Keyboard navigation inside finalize modal
-          if (e.key === 'Enter' && !finalizando) {
+          if (e.key === 'Enter' && !finalizandoRef.current) {
             e.preventDefault();
             finalizarVenda();
           } else if (e.key === '1') { setMetodoPagamento('dinheiro'); }
@@ -1753,7 +1753,7 @@ const PDV = () => {
                     type="number"
                     step="0.01"
                     autoFocus
-                    onKeyDown={e => { if (e.key === 'Enter' && !finalizando) { e.preventDefault(); e.stopPropagation(); finalizarVenda(); } }}
+                    onKeyDown={e => { if (e.key === 'Enter' && !finalizandoRef.current) { e.preventDefault(); e.stopPropagation(); finalizarVenda(); } }}
                   />
                 </div>
                 {troco > 0 && (
@@ -1774,8 +1774,8 @@ const PDV = () => {
           </div>
           <div className="flex gap-2 mt-2">
             <Button variant="outline" className="flex-1" onClick={() => setFinalizarModalOpen(false)}>ESC - Voltar</Button>
-            <Button className="flex-1 gap-1 bg-green-600 hover:bg-green-700 text-white" onClick={finalizarVenda} disabled={finalizando}>
-              <Check className="w-4 h-4" /> {finalizando ? 'PROCESSANDO...' : 'ENTER - CONFIRMAR'}
+            <Button className="flex-1 gap-1 bg-green-600 hover:bg-green-700 text-white" onClick={finalizarVenda}>
+              <Check className="w-4 h-4" /> ENTER - CONFIRMAR
             </Button>
           </div>
         </DialogContent>
