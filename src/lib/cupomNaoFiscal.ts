@@ -8,8 +8,8 @@ const LARGURA = 32;
 function getLoja() {
   const cfg = getLojaConfig();
   return {
-    nome: cfg.nomeFantasia || 'OLIVER SOFT TECH',
-    endereco: cfg.endereco || 'SOLUCOES EM SISTEMAS',
+    nome: cfg.nomeFantasia || 'NEXOR',
+    endereco: cfg.endereco || '',
     cidade: cfg.cidade || '',
     telefone: cfg.telefone || '',
     cnpj: cfg.cnpj || '',

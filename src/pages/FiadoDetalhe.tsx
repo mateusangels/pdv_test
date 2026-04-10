@@ -121,7 +121,7 @@ const FiadoDetalhe = () => {
     const tel = cliente?.telefone?.replace(/\D/g, '');
     if (!tel) { toast({ title: 'Telefone não cadastrado', variant: 'destructive' }); return; }
     const msg = encodeURIComponent(
-      `Olá ${cliente?.nome}.\n\nVocê possui um saldo pendente na Oliver Soft Tech.\n\nValor total: ${formatBRL(Number(fiado.valor_total))}\nValor pago: ${formatBRL(Number(fiado.valor_pago))}\nValor pendente: ${formatBRL(saldoPendente)}\n\nFavor regularizar o quanto antes.`
+      `Olá ${cliente?.nome}.\n\nVocê possui um saldo pendente na NEXOR.\n\nValor total: ${formatBRL(Number(fiado.valor_total))}\nValor pago: ${formatBRL(Number(fiado.valor_pago))}\nValor pendente: ${formatBRL(saldoPendente)}\n\nFavor regularizar o quanto antes.`
     );
     window.open(`https://wa.me/55${tel}?text=${msg}`, '_blank');
     supabase.from('cobrancas').insert({ cliente_id: fiado.cliente_id, fiado_id: id, valor_cobrado: saldoPendente, enviado_por: user?.id });

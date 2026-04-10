@@ -14,9 +14,9 @@ export interface LojaConfig {
 }
 
 const defaultConfig: LojaConfig = {
-  nomeFantasia: 'OLIVER SOFT TECH',
+  nomeFantasia: 'NEXOR',
   cnpj: '',
-  endereco: 'SOLUCOES EM SISTEMAS',
+  endereco: '',
   cidade: '',
   telefone: '',
   ie: '',

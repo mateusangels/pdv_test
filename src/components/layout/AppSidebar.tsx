@@ -24,16 +24,13 @@ export const AppSidebar = ({ collapsed, onToggle }: { collapsed: boolean; onTogg
       className={`fixed left-0 top-0 h-full bg-[#0f1729] flex flex-col z-50 transition-all duration-200 ${collapsed ? 'w-[60px]' : 'w-56'}`}
     >
       {/* Logo */}
-      <div className={`flex items-center border-b border-white/5 ${collapsed ? 'justify-center py-3 px-2' : 'gap-3 px-4 py-3'}`}>
-        <div className="w-8 h-8 rounded-md bg-blue-600 flex items-center justify-center shrink-0 overflow-hidden">
-          <img src="/logo.svg" alt="Logo" className="w-6 h-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
-        </div>
-        {!collapsed && (
-          <div className="overflow-hidden">
-            <h1 className="text-xs font-semibold text-white truncate">Oliver Soft Tech</h1>
-            <p className="text-[9px] text-white/40 truncate">Soluções em Sistemas</p>
-          </div>
-        )}
+      <div className={`flex items-center justify-center border-b border-white/5 overflow-hidden ${collapsed ? 'px-1 py-0' : 'px-2 py-0'}`}>
+        <img
+          src={collapsed ? '/LogoS_Branca.png' : '/logo_branca.png'}
+          alt="NEXOR"
+          className={collapsed ? 'w-full max-w-[40px]' : 'w-full scale-150'}
+          style={{ display: 'block' }}
+        />
       </div>
 
       {/* Nav */}

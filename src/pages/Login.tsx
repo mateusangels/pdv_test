@@ -33,58 +33,60 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center gradient-login animate-gradient relative overflow-hidden">
-      {/* Particles */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full opacity-10"
-            style={{
-              width: `${60 + i * 40}px`,
-              height: `${60 + i * 40}px`,
-              background: 'hsl(217 91% 60%)',
-              top: `${15 + i * 15}%`,
-              left: `${10 + i * 14}%`,
-              animation: `fadeIn ${2 + i * 0.5}s ease-out infinite alternate`,
-            }}
-          />
-        ))}
-      </div>
+    <div className="min-h-screen flex" style={{ background: '#0f1729' }}>
+      {/* LADO ESQUERDO - Branding */}
+      <div className="hidden lg:flex flex-1 flex-col items-center justify-center relative overflow-hidden px-12">
+        {/* Gradiente decorativo */}
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 30% 50%, rgba(59,130,246,0.15) 0%, transparent 60%)' }} />
 
-      <div className="glass-card rounded-2xl p-8 w-full max-w-md mx-4 animate-fade-up shadow-glass relative z-10">
-        <div className="text-center mb-8">
-          <div className="w-20 h-14 rounded-xl gradient-accent flex items-center justify-center mx-auto mb-4 p-2">
-            <img src="/logo.svg" alt="Oliver Soft Tech" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
-          </div>
-          <h1 className="text-2xl font-bold text-foreground">Oliver Soft Tech</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {isLogin ? 'Acesse sua conta' : 'Crie sua conta'}
-          </p>
+        {/* Logo grande */}
+        <div className="relative z-10 mb-8">
+          <img src="/logo_branca.png" alt="NEXOR" className="w-[700px] object-contain" />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <h2 className="relative z-10 text-3xl font-bold text-white text-center">
+          Olá, Bem-Vindo(a) de volta
+        </h2>
+        <p className="relative z-10 text-blue-300/60 text-sm mt-3 text-center max-w-sm">
+          Sistema de gestão e ponto de venda inteligente
+        </p>
+      </div>
+
+      {/* LADO DIREITO - Formulário */}
+      <div className="w-full lg:w-[420px] min-h-screen flex flex-col justify-center bg-card px-8 py-12 lg:rounded-l-3xl shadow-2xl">
+        {/* Logo mobile */}
+        <div className="lg:hidden flex justify-center mb-8">
+          <img src="/logo_preta.png" alt="NEXOR" className="w-40 object-contain" />
+        </div>
+
+        <div className="mb-8">
+          <h1 className="text-xl font-bold text-foreground">
+            {isLogin ? 'Gerenciamento NEXOR' : 'Criar Conta'}
+          </h1>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           {!isLogin && (
             <div className="space-y-1.5 animate-slide-up">
-              <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Nome Completo</Label>
+              <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Nome do usuário</Label>
               <Input
                 value={form.nome}
                 onChange={e => setForm({ ...form, nome: e.target.value })}
                 placeholder="Seu nome"
                 required={!isLogin}
-                className="h-11 input-glow"
+                className="h-11"
               />
             </div>
           )}
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">E-mail</Label>
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Nome do usuário</Label>
             <Input
               type="email"
               value={form.email}
               onChange={e => setForm({ ...form, email: e.target.value })}
               placeholder="seu@email.com"
               required
-              className="h-11 input-glow"
+              className="h-11"
             />
           </div>
           <div className="space-y-1.5">
@@ -97,7 +99,7 @@ const Login = () => {
                 placeholder="••••••••"
                 required
                 minLength={6}
-                className="h-11 pr-10 input-glow"
+                className="h-11 pr-10"
               />
               <button
                 type="button"
@@ -107,9 +109,14 @@ const Login = () => {
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
+            {isLogin && (
+              <p className="text-xs text-muted-foreground text-right mt-1 cursor-pointer hover:text-foreground transition-colors">
+                Esqueceu sua senha?
+              </p>
+            )}
           </div>
-          <Button type="submit" className="w-full h-11 gradient-accent text-primary-foreground font-semibold" disabled={loading}>
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : isLogin ? 'Entrar' : 'Criar Conta'}
+          <Button type="submit" className="w-full h-11 font-semibold" disabled={loading}>
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Entrar'}
           </Button>
         </form>
       </div>
