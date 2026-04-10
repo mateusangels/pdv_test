@@ -18,7 +18,7 @@ import {
 import { getLojaConfig, saveLojaConfig, type LojaConfig } from '@/lib/lojaConfig';
 
 const Section = ({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) => (
-  <div className="bg-card rounded-xl shadow-card border border-border/50 p-5 mb-4 animate-fade-up">
+  <div className="bg-card rounded-xl shadow-card border border-border/50 p-3 md:p-5 mb-4 animate-fade-up">
     <div className="mb-4">
       <h3 className="text-sm font-semibold">{title}</h3>
       {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
@@ -240,7 +240,7 @@ const Configuracoes = () => {
                 {showPin ? 'Ocultar PIN' : 'Alterar PIN de Segurança'}
               </button>
               {showPin && (
-                <div className="grid grid-cols-2 gap-3 mt-3 animate-slide-up">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 mt-3 animate-slide-up">
                   <div>
                     <Label className="text-xs uppercase text-muted-foreground mb-1.5 block">Novo PIN (4-6 dígitos)</Label>
                     <Input type="password" maxLength={6} value={perfil.pin} onChange={e => setPerfil({ ...perfil, pin: e.target.value })} placeholder="••••••" />

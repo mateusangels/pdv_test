@@ -48,7 +48,7 @@ const Pagamentos = () => {
       <PageHeader title="Pagamentos" description="Histórico completo de pagamentos" />
 
       <div className="bg-card rounded-xl shadow-card border border-border/50 animate-fade-up">
-        <div className="p-4 border-b border-border">
+        <div className="p-3 md:p-4 border-b border-border">
           <div className="relative max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Buscar por cliente..." value={search} onChange={e => { setSearch(e.target.value); setPage(0); }} className="pl-9 h-9 text-sm" />
@@ -59,6 +59,7 @@ const Pagamentos = () => {
           <EmptyState icon={CreditCard} title="Nenhum pagamento" description="Os pagamentos aparecerão aqui." />
         ) : (
           <>
+            <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -83,6 +84,7 @@ const Pagamentos = () => {
                 ))}
               </TableBody>
             </Table>
+            </div>
             {totalPages > 1 && (
               <div className="flex justify-between items-center p-4 border-t border-border text-sm text-muted-foreground">
                 <span>{filtered.length} pagamento(s)</span>

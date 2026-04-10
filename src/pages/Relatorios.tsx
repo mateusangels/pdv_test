@@ -68,7 +68,7 @@ const ReportSection = ({ title, icon: Icon, children, defaultOpen = false }: {
     <div className="bg-card rounded-xl shadow-card border border-border/50 mb-4 animate-fade-up overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-5 hover:bg-muted/30 transition-colors"
+        className="w-full flex items-center justify-between p-3 md:p-5 hover:bg-muted/30 transition-colors"
       >
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -78,7 +78,7 @@ const ReportSection = ({ title, icon: Icon, children, defaultOpen = false }: {
         </div>
         {open ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
       </button>
-      {open && <div className="px-5 pb-5">{children}</div>}
+      {open && <div className="px-3 md:px-5 pb-3 md:pb-5">{children}</div>}
     </div>
   );
 };
@@ -271,12 +271,12 @@ const Relatorios = () => {
       </PageHeader>
 
       {/* ── Filtros ── */}
-      <div className="bg-card rounded-xl p-4 shadow-card border border-border/50 mb-5 animate-fade-up">
-        <div className="flex flex-wrap gap-3 items-end">
+      <div className="bg-card rounded-xl p-3 md:p-4 shadow-card border border-border/50 mb-5 animate-fade-up">
+        <div className="flex flex-wrap gap-2 md:gap-3 items-end">
           <div>
             <Label className="text-xs uppercase text-muted-foreground mb-1 block">Período</Label>
             <Select value={periodo} onValueChange={v => setPeriodo(v as Periodo)}>
-              <SelectTrigger className="w-48 h-9 text-sm"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-full md:w-48 h-9 text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="hoje">Hoje</SelectItem>
                 <SelectItem value="mes_atual">Este Mês</SelectItem>
@@ -292,11 +292,11 @@ const Relatorios = () => {
             <>
               <div>
                 <Label className="text-xs uppercase text-muted-foreground mb-1 block">De</Label>
-                <Input type="date" className="h-9 text-sm w-40" value={customStart} onChange={e => setCustomStart(e.target.value)} />
+                <Input type="date" className="h-9 text-sm w-full md:w-40" value={customStart} onChange={e => setCustomStart(e.target.value)} />
               </div>
               <div>
                 <Label className="text-xs uppercase text-muted-foreground mb-1 block">Até</Label>
-                <Input type="date" className="h-9 text-sm w-40" value={customEnd} onChange={e => setCustomEnd(e.target.value)} />
+                <Input type="date" className="h-9 text-sm w-full md:w-40" value={customEnd} onChange={e => setCustomEnd(e.target.value)} />
               </div>
             </>
           )}
@@ -328,10 +328,10 @@ const Relatorios = () => {
         {/* ════════════ TAB VENDAS ════════════ */}
         <TabsContent value="vendas">
           {/* Evolução Mensal */}
-          <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 mb-4 animate-fade-up">
+          <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 mb-4 animate-fade-up">
             <h3 className="text-base font-semibold mb-0.5">Evolução Mensal</h3>
             <p className="text-xs text-muted-foreground mb-4">Vendas PDV vs. Fiados vs. Recebimentos – últimos 6 meses</p>
-            <div className="h-64">
+            <div className="h-40 md:h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartMensal} barGap={4}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -349,7 +349,7 @@ const Relatorios = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
             {/* Vendas por Funcionário */}
-            <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 animate-fade-up">
+            <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 animate-fade-up">
               <h3 className="text-base font-semibold mb-0.5 flex items-center gap-2">
                 <User className="w-4 h-4 text-primary" /> Vendas por Funcionário
               </h3>
@@ -358,7 +358,7 @@ const Relatorios = () => {
                 <p className="text-sm text-muted-foreground text-center py-8">Nenhuma venda no período</p>
               ) : (
                 <>
-                  <div className="h-48 mb-4">
+                  <div className="h-32 md:h-48 mb-4">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={vendasPorFuncionario} layout="vertical" barSize={16}>
                         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
@@ -386,7 +386,7 @@ const Relatorios = () => {
             </div>
 
             {/* Vendas por Método de Pagamento */}
-            <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 animate-fade-up">
+            <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 animate-fade-up">
               <h3 className="text-base font-semibold mb-0.5 flex items-center gap-2">
                 <CreditCard className="w-4 h-4 text-primary" /> Vendas por Pagamento
               </h3>
@@ -395,7 +395,7 @@ const Relatorios = () => {
                 <p className="text-sm text-muted-foreground text-center py-8">Nenhuma venda no período</p>
               ) : (
                 <>
-                  <div className="h-48 mb-4">
+                  <div className="h-32 md:h-48 mb-4">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie data={vendasPorMetodo} dataKey="total" nameKey="metodo" cx="50%" cy="50%" outerRadius={80} label={({ metodo, percent }) => `${metodo} ${Math.round(percent * 100)}%`} labelLine={false} fontSize={10}>
@@ -434,10 +434,10 @@ const Relatorios = () => {
 
           {/* Vendas por Período */}
           {vendasPorDia.length > 1 && (
-            <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 mb-4 animate-fade-up">
+            <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 mb-4 animate-fade-up">
               <h3 className="text-base font-semibold mb-0.5">Vendas por Período</h3>
               <p className="text-xs text-muted-foreground mb-4">Vendas PDV e Fiados por dia</p>
-              <div className="h-56">
+              <div className="h-40 md:h-56">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={vendasPorDia}>
                     <defs>
@@ -464,7 +464,7 @@ const Relatorios = () => {
           )}
 
           {/* Resumo financeiro */}
-          <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 animate-fade-up">
+          <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 animate-fade-up">
             <h3 className="text-base font-semibold mb-4">Resumo Financeiro do Período</h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="text-center">
@@ -497,7 +497,7 @@ const Relatorios = () => {
 
         {/* ════════════ TAB PRODUTOS ════════════ */}
         <TabsContent value="produtos">
-          <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 mb-4 animate-fade-up">
+          <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 mb-4 animate-fade-up">
             <h3 className="text-base font-semibold mb-0.5 flex items-center gap-2">
               <Package className="w-4 h-4 text-primary" /> Top 15 Produtos Mais Vendidos
             </h3>
@@ -506,7 +506,7 @@ const Relatorios = () => {
               <p className="text-sm text-muted-foreground text-center py-8">Nenhuma venda no período</p>
             ) : (
               <>
-                <div className="h-72 mb-4">
+                <div className="h-48 md:h-72 mb-4">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={topProdutos} layout="vertical" barSize={14}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
@@ -538,13 +538,13 @@ const Relatorios = () => {
         <TabsContent value="fiados">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
             {/* Fiados por Status */}
-            <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 animate-fade-up">
+            <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 animate-fade-up">
               <h3 className="text-base font-semibold mb-0.5">Fiados por Status</h3>
               <p className="text-xs text-muted-foreground mb-4">{fiadosPeriodo.length} fiado(s) no período</p>
               {statusPizza.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-8 flex items-center justify-center gap-2"><FileText className="w-4 h-4" /> Sem dados</p>
               ) : (
-                <div className="h-52">
+                <div className="h-40 md:h-52">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie data={statusPizza} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, percent }) => `${name} ${Math.round(percent * 100)}%`} labelLine={false} fontSize={10}>
@@ -555,7 +555,7 @@ const Relatorios = () => {
                   </ResponsiveContainer>
                 </div>
               )}
-              <div className="flex flex-wrap gap-3 mt-2">
+              <div className="flex flex-wrap gap-2 md:gap-3 mt-2">
                 {statusPizza.map((s, i) => (
                   <div key={s.name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: CORES[i % CORES.length] }} />
@@ -566,7 +566,7 @@ const Relatorios = () => {
             </div>
 
             {/* Pagamentos de Fiados por Método */}
-            <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 animate-fade-up">
+            <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 animate-fade-up">
               <h3 className="text-base font-semibold mb-0.5">Recebimentos de Fiados</h3>
               <p className="text-xs text-muted-foreground mb-4">Por forma de pagamento no período</p>
               {metodosPagFiado.length === 0 ? (
@@ -596,7 +596,7 @@ const Relatorios = () => {
           </div>
 
           {/* Ranking clientes devedores */}
-          <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 animate-fade-up">
+          <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 animate-fade-up">
             <h3 className="text-base font-semibold mb-0.5">Top 10 – Maior Dívida Ativa</h3>
             <p className="text-xs text-muted-foreground mb-4">Clientes com saldo em aberto</p>
             {rankingClientes.length === 0 ? (
@@ -635,25 +635,25 @@ const Relatorios = () => {
         {/* ════════════ TAB CLIENTES ════════════ */}
         <TabsContent value="clientes">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-            <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 text-center animate-fade-up">
+            <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 text-center animate-fade-up">
               <p className="text-xs uppercase text-muted-foreground">Total de Clientes</p>
               <p className="text-3xl font-bold mt-2">{clientes.length}</p>
             </div>
-            <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 text-center animate-fade-up">
+            <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 text-center animate-fade-up">
               <p className="text-xs uppercase text-muted-foreground">Clientes Ativos</p>
               <p className="text-3xl font-bold text-primary mt-2">{clientes.filter(c => c.status === 'ativo').length}</p>
             </div>
-            <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 text-center animate-fade-up">
+            <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 text-center animate-fade-up">
               <p className="text-xs uppercase text-muted-foreground">Inadimplentes</p>
               <p className="text-3xl font-bold text-destructive mt-2">{clientes.filter(c => c.status === 'inadimplente').length}</p>
             </div>
           </div>
 
           {/* Clientes com mais fiados */}
-          <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 animate-fade-up">
+          <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 animate-fade-up">
             <h3 className="text-base font-semibold mb-4">Clientes por Volume de Compra (Fiados)</h3>
             {rankingClientes.length > 0 && (
-              <div className="h-48">
+              <div className="h-32 md:h-48">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={rankingClientes.slice(0, 8)} barSize={20}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />

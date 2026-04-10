@@ -50,7 +50,7 @@ const Perfil = () => {
     <div className="max-w-2xl">
       <PageHeader title="Meu Perfil" description="Gerencie suas informações pessoais" />
 
-      <div className="bg-card rounded-xl shadow-card border border-border/50 p-6 animate-fade-up">
+      <div className="bg-card rounded-xl shadow-card border border-border/50 p-3 md:p-6 animate-fade-up">
         <div className="flex items-center gap-4 mb-6">
           <Avatar className="w-16 h-16">
             <AvatarFallback className="bg-primary text-primary-foreground text-xl font-bold">{initials}</AvatarFallback>
@@ -71,7 +71,7 @@ const Perfil = () => {
               {showPin ? 'Ocultar PIN' : 'Alterar PIN de Segurança'}
             </button>
             {showPin && (
-              <div className="grid grid-cols-2 gap-3 mt-3 animate-slide-up">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 mt-3 animate-slide-up">
                 <div><Label className="text-xs uppercase text-muted-foreground">Novo PIN</Label><Input type="password" maxLength={6} value={form.pin} onChange={e => setForm({ ...form, pin: e.target.value })} placeholder="••••••" /></div>
                 <div><Label className="text-xs uppercase text-muted-foreground">Confirmar PIN</Label><Input type="password" maxLength={6} value={form.pinConfirm} onChange={e => setForm({ ...form, pinConfirm: e.target.value })} placeholder="••••••" /></div>
               </div>

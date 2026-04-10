@@ -195,12 +195,13 @@ const FiadoDetalhe = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Itens */}
         <div className="bg-card rounded-xl shadow-card border border-border/50 animate-fade-up" style={{ animationDelay: '500ms' }}>
-          <div className="flex items-center justify-between p-4 border-b border-border">
+          <div className="flex items-center justify-between p-3 md:p-4 border-b border-border">
             <h3 className="text-sm font-semibold">Itens</h3>
             <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={() => setShowItem(true)}>
               <Plus className="w-3 h-3" /> Adicionar
             </Button>
           </div>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -235,6 +236,7 @@ const FiadoDetalhe = () => {
               )}
             </TableBody>
           </Table>
+          </div>
         </div>
 
         {/* Pagamentos */}
@@ -242,6 +244,7 @@ const FiadoDetalhe = () => {
           <div className="p-4 border-b border-border">
             <h3 className="text-sm font-semibold">Pagamentos</h3>
           </div>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -271,12 +274,13 @@ const FiadoDetalhe = () => {
               )}
             </TableBody>
           </Table>
+          </div>
         </div>
       </div>
 
       {/* Dialog Pagamento */}
       <Dialog open={showPayment} onOpenChange={setShowPayment}>
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent className="max-w-[95vw] sm:max-w-sm">
           <DialogHeader><DialogTitle>Registrar Pagamento</DialogTitle></DialogHeader>
           <div className="bg-muted/50 rounded-lg p-3 mb-2">
             <p className="text-xs text-muted-foreground uppercase">Saldo Restante</p>
@@ -311,11 +315,11 @@ const FiadoDetalhe = () => {
 
       {/* Dialog Adicionar Item */}
       <Dialog open={showItem} onOpenChange={setShowItem}>
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent className="max-w-[95vw] sm:max-w-sm">
           <DialogHeader><DialogTitle>Adicionar Item</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div><Label className="text-xs uppercase text-muted-foreground">Produto</Label><Input value={itemForm.produto} onChange={e => setItemForm({ ...itemForm, produto: e.target.value })} /></div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
               <div><Label className="text-xs uppercase text-muted-foreground">Quantidade</Label><Input type="number" value={itemForm.quantidade} onChange={e => setItemForm({ ...itemForm, quantidade: Number(e.target.value) })} /></div>
               <div><Label className="text-xs uppercase text-muted-foreground">Valor Unitário</Label><Input type="number" step="0.01" value={itemForm.valor_unitario} onChange={e => setItemForm({ ...itemForm, valor_unitario: Number(e.target.value) })} /></div>
             </div>

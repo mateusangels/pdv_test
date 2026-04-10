@@ -342,8 +342,8 @@ const Produtos = () => {
         </div>
       </PageHeader>
 
-      <div className="flex flex-wrap gap-3 items-center">
-        <div className="relative flex-1 min-w-[250px]">
+      <div className="flex flex-wrap gap-2 md:gap-3 items-center">
+        <div className="relative flex-1 min-w-0 w-full md:min-w-[250px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por descrição, código ou marca..."
@@ -353,7 +353,7 @@ const Produtos = () => {
           />
         </div>
         <Select value={filtroAtivo} onValueChange={v => { setFiltroAtivo(v); setPage(0); }}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-full md:w-40">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -368,7 +368,7 @@ const Produtos = () => {
         <EmptyState icon={Package} title="Nenhum produto encontrado" description="Cadastre um novo produto para começar." />
       ) : (
         <>
-          <div className="bg-card rounded-xl border border-border shadow-card overflow-hidden">
+          <div className="bg-card rounded-xl border border-border shadow-card overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
@@ -432,7 +432,7 @@ const Produtos = () => {
 
       {/* Modal Cadastro/Edição */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Barcode className="w-5 h-5 text-primary" />
@@ -465,7 +465,7 @@ const Produtos = () => {
                   placeholder="Ex: ARROZ TIPO 1 5KG"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
                 <div>
                   <Label className="text-sm font-bold text-primary">Preço Custo (R$)</Label>
                   <Input
@@ -518,7 +518,7 @@ const Produtos = () => {
               <Label>NCM</Label>
               <Input value={form.codigo_interno} onChange={e => setForm(f => ({ ...f, codigo_interno: e.target.value }))} className="input-glow" />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
               <div>
                 <Label>Unidade</Label>
                 <Select value={form.unidade} onValueChange={v => setForm(f => ({ ...f, unidade: v }))}>
@@ -540,7 +540,7 @@ const Produtos = () => {
                 <Input value={form.categoria} onChange={e => setForm(f => ({ ...f, categoria: e.target.value }))} className="input-glow" />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
               <div>
                 <Label>Marca</Label>
                 <Input value={form.marca} onChange={e => setForm(f => ({ ...f, marca: e.target.value }))} className="input-glow" />
@@ -550,7 +550,7 @@ const Produtos = () => {
                 <Input type="number" value={form.estoque_atual} onChange={e => setForm(f => ({ ...f, estoque_atual: e.target.value }))} className="input-glow" />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
               <div>
                 <Label>Estoque Mínimo</Label>
                 <Input type="number" value={form.estoque_minimo} onChange={e => setForm(f => ({ ...f, estoque_minimo: e.target.value }))} className="input-glow" />
@@ -578,7 +578,7 @@ const Produtos = () => {
 
       {/* Modal Excluir */}
       <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent className="max-w-[95vw] sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>Confirmar Exclusão</DialogTitle>
           </DialogHeader>

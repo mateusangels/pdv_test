@@ -208,7 +208,7 @@ export default function Vendas() {
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
-    <div className="p-6 space-y-6 animate-fade-up">
+    <div className="p-3 md:p-6 space-y-6 animate-fade-up">
       <PageHeader title="Historico de Vendas" description="Consulte todas as vendas realizadas">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Receipt className="w-4 h-4" />
@@ -217,8 +217,8 @@ export default function Vendas() {
       </PageHeader>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3 items-end">
-        <div className="flex-1 min-w-[200px] max-w-sm">
+      <div className="flex flex-wrap gap-2 md:gap-3 items-end">
+        <div className="flex-1 min-w-0 w-full md:min-w-[200px] max-w-sm">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
@@ -232,7 +232,7 @@ export default function Vendas() {
         </div>
 
         <Select value={metodoFiltro} onValueChange={v => { setMetodoFiltro(v); setPage(0); }}>
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger className="w-full md:w-[160px]">
             <SelectValue placeholder="Pagamento" />
           </SelectTrigger>
           <SelectContent>
@@ -248,10 +248,10 @@ export default function Vendas() {
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <Calendar className="w-4 h-4 text-muted-foreground" />
-            <Input type="date" value={dataInicio} onChange={e => { setDataInicio(e.target.value); setPage(0); }} className="w-[150px]" />
+            <Input type="date" value={dataInicio} onChange={e => { setDataInicio(e.target.value); setPage(0); }} className="w-full md:w-[150px]" />
           </div>
           <span className="text-muted-foreground text-sm">ate</span>
-          <Input type="date" value={dataFim} onChange={e => { setDataFim(e.target.value); setPage(0); }} className="w-[150px]" />
+          <Input type="date" value={dataFim} onChange={e => { setDataFim(e.target.value); setPage(0); }} className="w-full md:w-[150px]" />
         </div>
 
         <Button variant="outline" size="sm" onClick={() => { setSearch(''); setMetodoFiltro('todos'); setDataInicio(''); setDataFim(''); setPage(0); }}>
@@ -272,7 +272,7 @@ export default function Vendas() {
           <p className="text-muted-foreground">Nenhuma venda encontrada</p>
         </div>
       ) : (
-        <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden">
+        <div className="bg-card rounded-lg border border-border shadow-sm overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
@@ -355,7 +355,7 @@ export default function Vendas() {
 
       {/* Detail Modal */}
       <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[85vh] flex flex-col overflow-hidden">
+        <DialogContent className="max-w-[95vw] sm:max-w-lg max-h-[85vh] flex flex-col overflow-hidden">
           <DialogHeader className="flex-shrink-0">
             <DialogTitle className="flex items-center gap-2">
               <Receipt className="w-5 h-5 text-primary" />
@@ -364,7 +364,7 @@ export default function Vendas() {
           </DialogHeader>
           {selectedVenda && (
             <div className="flex flex-col flex-1 min-h-0 space-y-4">
-              <div className="grid grid-cols-2 gap-3 text-sm flex-shrink-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 text-sm flex-shrink-0">
                 <div>
                   <p className="text-muted-foreground text-xs">Data</p>
                   <p className="font-medium">{formatDateTime(selectedVenda.created_at)}</p>

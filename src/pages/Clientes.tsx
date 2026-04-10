@@ -133,13 +133,13 @@ const Clientes = () => {
       </PageHeader>
 
       <div className="bg-card rounded-xl shadow-card border border-border/50 animate-fade-up">
-        <div className="p-4 border-b border-border flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-[200px]">
+        <div className="p-3 md:p-4 border-b border-border flex flex-wrap gap-2 md:gap-3">
+          <div className="relative flex-1 min-w-0 w-full md:min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Buscar por nome, CPF ou código..." value={search} onChange={e => { setSearch(e.target.value); setPage(0); }} className="pl-9 h-9 text-sm" />
           </div>
           <Select value={statusFilter} onValueChange={v => { setStatusFilter(v); setPage(0); }}>
-            <SelectTrigger className="w-40 h-9 text-sm">
+            <SelectTrigger className="w-full md:w-40 h-9 text-sm">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -154,6 +154,7 @@ const Clientes = () => {
           <EmptyState icon={Users} title="Nenhum cliente" description="Cadastre o primeiro cliente para começar." action={<Button onClick={() => setShowForm(true)}>Cadastrar</Button>} />
         ) : (
           <>
+            <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -186,6 +187,7 @@ const Clientes = () => {
                 ))}
               </TableBody>
             </Table>
+            </div>
             {totalPages > 1 && (
               <div className="flex justify-between items-center p-4 border-t border-border text-sm text-muted-foreground">
                 <span>{filtered.length} cliente(s)</span>
@@ -201,17 +203,17 @@ const Clientes = () => {
       </div>
 
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="max-w-[95vw] sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{editingId ? 'Editar Cliente' : 'Novo Cliente'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div><Label className="text-xs uppercase text-muted-foreground">Nome Completo</Label><Input value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} /></div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
               <div><Label className="text-xs uppercase text-muted-foreground">Código Interno</Label><Input value={form.codigo_interno} onChange={e => setForm({ ...form, codigo_interno: e.target.value })} /></div>
               <div><Label className="text-xs uppercase text-muted-foreground">CPF</Label><Input value={form.cpf} onChange={e => setForm({ ...form, cpf: e.target.value })} maxLength={14} /></div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
               <div><Label className="text-xs uppercase text-muted-foreground">Telefone</Label><Input value={form.telefone} onChange={e => setForm({ ...form, telefone: e.target.value })} /></div>
               <div><Label className="text-xs uppercase text-muted-foreground">Limite de Crédito</Label><Input type="number" value={form.limite_credito} onChange={e => setForm({ ...form, limite_credito: Number(e.target.value) })} /></div>
             </div>

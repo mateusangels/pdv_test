@@ -818,18 +818,18 @@ const PDV = () => {
   return (
     <div className="h-screen flex flex-col text-foreground overflow-hidden relative" style={{ background: 'linear-gradient(135deg, #0d47a1 0%, #1565c0 30%, #1976d2 60%, #1e88e5 100%)' }}>
       {/* TOP BAR */}
-      <header className="relative z-20 flex items-center justify-between px-4 py-2 bg-[#0a3d91] border-b border-[#0d47a1] shadow-lg">
-        <div className="flex items-center gap-3">
+      <header className="relative z-20 flex items-center justify-between px-2 md:px-4 py-2 bg-[#0a3d91] border-b border-[#0d47a1] shadow-lg gap-2">
+        <div className="flex items-center gap-2 md:gap-3 shrink-0">
           <button onClick={() => navigate('/dashboard')} className="p-1 rounded-lg hover:bg-white/10 transition-colors">
-            <img src="/LogoS_Branca.png" alt="NEXOR" className="w-8 h-8 object-contain" />
+            <img src="/LogoS_Branca.png" alt="NEXOR" className="w-7 h-7 md:w-8 md:h-8 object-contain" />
           </button>
-          <div>
-            <h1 className="text-sm font-bold tracking-wide text-white">NEXOR PDV</h1>
-            <p className="text-[10px] text-blue-200">Terminal {String(numeroCaixa).padStart(2, '0')} - Caixa {numeroCaixa}</p>
+          <div className="hidden sm:block">
+            <h1 className="text-xs md:text-sm font-bold tracking-wide text-white">NEXOR PDV</h1>
+            <p className="text-[9px] md:text-[10px] text-blue-200">Terminal {String(numeroCaixa).padStart(2, '0')} - Caixa {numeroCaixa}</p>
           </div>
         </div>
 
-        <div className="flex-1 max-w-xl mx-6">
+        <div className="flex-1 max-w-full md:max-w-xl mx-0 md:mx-6">
           <div className="relative">
             <BarCodeIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-200 z-10" />
             <Input
@@ -885,34 +885,34 @@ const PDV = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1 md:gap-4 shrink-0">
           {/* Indicador online/offline/sincronizando */}
           {isSyncing ? (
-            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-500/20 border border-yellow-400/30">
+            <div className="flex items-center gap-1 px-1.5 md:px-2 py-1 rounded-full bg-yellow-500/20 border border-yellow-400/30">
               <Loader2 className="w-3 h-3 text-yellow-300 animate-spin" />
-              <span className="text-[10px] font-medium text-yellow-300">SINCRONIZANDO...</span>
+              <span className="text-[8px] md:text-[10px] font-medium text-yellow-300 hidden sm:inline">SINCRONIZANDO...</span>
             </div>
           ) : isOnline ? (
-            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/20 border border-green-400/30">
+            <div className="flex items-center gap-1 px-1.5 md:px-2 py-1 rounded-full bg-green-500/20 border border-green-400/30">
               <Wifi className="w-3 h-3 text-green-300" />
-              <span className="text-[10px] font-medium text-green-300">ONLINE</span>
+              <span className="text-[8px] md:text-[10px] font-medium text-green-300 hidden sm:inline">ONLINE</span>
             </div>
           ) : (
-            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-red-500/20 border border-red-400/30 animate-pulse">
+            <div className="flex items-center gap-1 px-1.5 md:px-2 py-1 rounded-full bg-red-500/20 border border-red-400/30 animate-pulse">
               <WifiOff className="w-3 h-3 text-red-300" />
-              <span className="text-[10px] font-medium text-red-300">OFFLINE</span>
+              <span className="text-[8px] md:text-[10px] font-medium text-red-300 hidden sm:inline">OFFLINE</span>
             </div>
           )}
           {pendingCount > 0 && (
             <button onClick={() => { if (isOnline) syncNow(); }}
-              className="flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500/20 border border-orange-400/30 hover:bg-orange-500/30 transition-colors">
+              className="flex items-center gap-1 px-1.5 md:px-2 py-1 rounded-full bg-orange-500/20 border border-orange-400/30 hover:bg-orange-500/30 transition-colors">
               <CloudUpload className="w-3 h-3 text-orange-300" />
               <span className="text-[10px] font-bold text-orange-300">{pendingCount}</span>
             </button>
           )}
 
-          <div className="text-right">
-            <p className="text-sm font-medium text-white">{dateStr}, {timeStr}</p>
+          <div className="text-right hidden sm:block">
+            <p className="text-xs md:text-sm font-medium text-white">{dateStr}, {timeStr}</p>
             <div className="flex items-center gap-1 justify-end">
               <span className={`w-2 h-2 rounded-full ${caixaAberto ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
               <span className={`text-[10px] font-medium ${caixaAberto ? 'text-green-300' : 'text-red-300'}`}>
@@ -949,11 +949,11 @@ const PDV = () => {
           </div>
         </div>
       ) : (
-        <div className="relative z-10 flex flex-1 overflow-hidden">
+        <div className="relative z-10 flex flex-col md:flex-row flex-1 overflow-hidden">
           {/* LEFT: Product list */}
           <div className="flex-1 flex flex-col">
             <div className="flex-1 p-3 overflow-hidden flex flex-col">
-              <div className="flex-1 bg-card rounded-lg border border-border overflow-auto shadow-sm relative">
+              <div className="flex-1 bg-card rounded-lg border border-border overflow-auto shadow-sm relative min-w-0">
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
                   <img src={getLojaConfig().logoUrl || '/logo_preta.png'} alt="" className="w-[1100px] h-auto opacity-[0.35]" />
                 </div>
@@ -1059,7 +1059,7 @@ const PDV = () => {
           </div>
 
           {/* RIGHT: Summary panel */}
-          <div className="w-[320px] flex flex-col border-l border-border bg-card">
+          <div className="w-full md:w-[320px] flex flex-col border-t md:border-t-0 md:border-l border-border bg-card max-h-[40vh] md:max-h-none overflow-y-auto">
             <div className="p-3 border-b border-border">
               {cliente ? (
                 <div>

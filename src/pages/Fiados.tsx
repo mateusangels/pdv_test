@@ -271,13 +271,13 @@ const Fiados = () => {
       <PageHeader title="Fiados" description="Controle de vendas fiadas" />
 
       <div className="bg-card rounded-xl shadow-card border border-border/50 animate-fade-up">
-        <div className="p-4 border-b border-border flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-[200px]">
+        <div className="p-3 md:p-4 border-b border-border flex flex-wrap gap-2 md:gap-3">
+          <div className="relative flex-1 min-w-0 w-full md:min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Buscar por cliente ou descrição..." value={search} onChange={e => { setSearch(e.target.value); setPage(0); }} className="pl-9 h-9 text-sm" />
           </div>
           <Select value={statusFilter} onValueChange={v => { setStatusFilter(v); setPage(0); }}>
-            <SelectTrigger className="w-40 h-9 text-sm"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectTrigger className="w-full md:w-40 h-9 text-sm"><SelectValue placeholder="Status" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos</SelectItem>
               <SelectItem value="pendente">Pendente</SelectItem>
@@ -292,6 +292,7 @@ const Fiados = () => {
           <EmptyState icon={ShoppingCart} title="Nenhum fiado" description="Registre o primeiro fiado." />
         ) : (
           <>
+            <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -330,6 +331,7 @@ const Fiados = () => {
                 ))}
               </TableBody>
             </Table>
+            </div>
             {totalPages > 1 && (
               <div className="flex justify-between items-center p-4 border-t border-border text-sm text-muted-foreground">
                 <span>{filtered.length} fiado(s)</span>
@@ -346,7 +348,7 @@ const Fiados = () => {
 
       {/* ── Formulário Novo Fiado (estilo PDV) ── */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle className="flex items-center gap-2"><Barcode className="w-5 h-5" /> Novo Fiado</DialogTitle></DialogHeader>
           <div className="space-y-4">
             {/* Cliente */}

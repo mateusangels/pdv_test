@@ -7,6 +7,7 @@ export const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(() => {
     return localStorage.getItem('sidebar_collapsed') === 'true';
   });
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleToggle = () => {
     setCollapsed(prev => {
@@ -17,10 +18,15 @@ export const AppLayout = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppSidebar collapsed={collapsed} onToggle={handleToggle} />
-      <div className={`transition-all duration-200 ${collapsed ? 'ml-[60px]' : 'ml-56'}`}>
-        <AppHeader />
-        <main className="p-6">
+      <AppSidebar
+        collapsed={collapsed}
+        onToggle={handleToggle}
+        mobileOpen={mobileOpen}
+        onMobileToggle={() => setMobileOpen(prev => !prev)}
+      />
+      <div className={`transition-all duration-200 ml-0 ${collapsed ? 'md:ml-[60px]' : 'md:ml-56'}`}>
+        <AppHeader onMobileMenuToggle={() => setMobileOpen(prev => !prev)} />
+        <main className="p-3 md:p-6">
           <Outlet />
         </main>
       </div>

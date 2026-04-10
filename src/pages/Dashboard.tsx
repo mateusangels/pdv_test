@@ -177,7 +177,7 @@ const Dashboard = () => {
       <PageHeader title="Dashboard" description="Visão geral do sistema" />
 
       {/* FILTRO DE PERÍODO */}
-      <div className="bg-card rounded-xl p-4 shadow-card border border-border/50 mb-6 animate-fade-up flex flex-wrap items-end gap-4">
+      <div className="bg-card rounded-xl p-3 md:p-4 shadow-card border border-border/50 mb-4 md:mb-6 animate-fade-up flex flex-wrap items-end gap-2 md:gap-4">
         <div className="flex items-center gap-2 text-primary">
           <Calendar className="w-4 h-4" />
           <span className="text-sm font-semibold">Período</span>
@@ -211,7 +211,7 @@ const Dashboard = () => {
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4 mb-4 md:mb-6">
         <StatCard title="Vendas PDV" value={formatBRL(totalVendasPDV)} icon={ShoppingCart} delay={0} />
         <StatCard title="Total em Aberto" value={formatBRL(totalAberto)} icon={DollarSign} delay={100} />
         <StatCard title="Recebido" value={formatBRL(totalRecebido)} icon={TrendingUp} delay={200} />
@@ -220,8 +220,8 @@ const Dashboard = () => {
       </div>
 
       {/* Evolução Mensal */}
-      <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 mb-4 animate-fade-up" style={{ animationDelay: '500ms' }}>
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-card rounded-xl p-3 md:p-5 shadow-card border border-border/50 mb-4 animate-fade-up" style={{ animationDelay: '500ms' }}>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
           <div>
             <h3 className="text-base font-semibold mb-0.5">Evolução Mensal</h3>
             <p className="text-xs text-muted-foreground">Últimos 6 meses</p>
@@ -259,7 +259,7 @@ const Dashboard = () => {
             </button>
           </div>
         </div>
-        <div className="h-64">
+        <div className="h-48 md:h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} barGap={4}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -274,7 +274,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-4 mb-4">
         {/* Vendas por Funcionário */}
         <div className="bg-card rounded-xl p-5 shadow-card border border-border/50 animate-fade-up" style={{ animationDelay: '600ms' }}>
           <h3 className="text-base font-semibold mb-0.5 flex items-center gap-2">
